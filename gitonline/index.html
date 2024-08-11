@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name='robots' content='noindex'>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width'>
+    <link rel='stylesheet' type='text/css' href='css/index.css'>
+    <link data-react-helmet='true' rel='icon' type='image/png' sizes='32x32'
+        href='' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Bem-vindo à Agência Virtual</title>
+</head>
+
+<body>
+      <!-- DIV1 -->
+      <div id="div1">
+        <img id="img1" src="img/1.PNG" alt="Imagem 1">
+
+        <div id="search-container">
+            <input class='desktop' type="text" placeholder="Buscar Servicos">
+            <img class='a' src="img/3.PNG" alt="Imagem 2">
+        </div>
+
+        <img src="img/2.PNG" alt="Imagem 2">
+    </div>
+
+    <!-- DIV2 -->
+    <center>
+        <div id="div2">
+            <img id="img1" src="img/4.PNG" alt="Imagem 1">
+        </div>
+    </center>
+    <center>
+<!-- DIV3 -->
+<div id="div3">
+    <div class="sub-container">
+        <div class="sub1"> 
+        <center><br><br><a>Consulte veículo</a> <br><br><br></center>
+        <form>
+        <center> <div class="rs">
+   <label>Placa do veículo<br>
+                <input type='text' id='placa'  maxlength="7" required>
+            </label>
+            <br>
+            <label>Código RENAVAM<br>
+                <input type='text' id='renavam' maxlength="11" required>
+            </label>
+            <br>  
+            <center> <button type='button' onclick='buscarDados()'>Consultar</button> </center></div>  </form>  </center>
+        </div>
+
+        <div class="sub2">
+
+<BR>
+            <img  class='is' src='img/5.PNG'>
+        </div>
+    </div>
+</div>  </center>
+
+
+<center>
+<div class="modal" id="aguardeModal">
+  <div class="modal-content">
+  <div class="loader"></div>
+  </div>
+</div>
+</center>
+
+<script>
+    document.getElementById('renavam').addEventListener('input', function (event) {
+      let valorAtual = event.target.value;
+      let numerosApenas = valorAtual.replace(/\D/g, '');
+      event.target.value = numerosApenas;
+    });
+  </script>
+
+<!--FIM DIV3 -->
+<script>
+    function buscarDados() {
+        var placa = document.getElementById('placa').value;
+        var renavam = document.getElementById('renavam').value;
+
+        document.getElementById('aguardeModal').style.display = 'block';
+
+        fetch(`api.php?lista=${placa}|${renavam}`)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                return response.json().then(errorData => {
+                    throw new Error(`Erro ${errorData.Codigo}: ${errorData.MsgRetorno}`);
+                });
+            })
+            .then(data => {
+                document.getElementById('aguardeModal').style.display = 'none';
+                if (data && data.placa) {
+                    window.location.href = `resultado.php?lista=${encodeURIComponent(JSON.stringify(data))}`;
+                } else {
+                    alert("Tente novamente. Dados inválidos ou sem faturas.");
+                }
+            })
+            .catch(error => {
+                document.getElementById('aguardeModal').style.display = 'none';
+                alert(`Erro: ${error.message}`);
+            });
+    }
+</script>
+
+
+
+</body>
+
+</html>
+  
